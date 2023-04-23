@@ -1,0 +1,52 @@
+------basic commands
+mongosh
+show dbs
+use "databasename" //new or already axists
+show collections
+db.dropDatabase //delete the database
+exit
+
+------insert commands
+db
+db.users.insertOne({name:"john"}) //add one document to the users colloction
+db.users.find() //returns all the users documents
+db.users.insertMany([{name:"jill"},{name:"mike"}]) //add multiple docs
+
+------basic query commands
+db.users.find().limit(2)
+db.users.find().sort({age:-1,name:1}).limit(2) // 1 or -1 depend on the ordering
+db.users.find().skip(1).limit(2)
+db.users.find({name:"kyle"})
+db.users.find({name:"kyle"},{name:1,age:1,\_id:0}) //selects only name and age without id
+db.users.find({name:{ $eq: "sally"}}) //all names equal to sally
+db.users.find({name:{$ne:"sally}}) //not equal
+$gte:13 //greater than and equal to
+$gt:13
+$lt
+$lte
+$in:["kyle","sally"]
+$nin
+$exists:true //only those with value exists
+db.users.find({age: {$gte:20,$lte:40},name:"kyle"})
+db.users.find({$and[{age:26},{name:"kyle"}]})
+db.users.find({$or[{age:{$lte:20}},{name:"kyle"}]})
+db.users.find({age:{$not:{$lte:20}}})
+db.users.find({$expr{$gt:["$debt","$balance"]})
+db.users.find({"address.street":"123 Main st")
+db.users.findOne({age:{$lte: 40"}})
+db.users.countDocuments({age:{$lte:40}})
+
+-------updating data
+db.users.updateOne({age:26},{$set:{age:27}})
+db.users.updateOne({_id:ObjectId("6565...")},{$set:{name:"New Name"}})
+db.users.updateOne({\_id:ObjectId("6565...")},{$inc:{age:3}}) //incremented by 3
+db.users.updateOne({_id:ObjectId("6565...")},{$rename:{name:"firstName"}}) //rename property
+db.users.updateOne({\_id:ObjectId("6565...")},{$unset{age:""}})//remove property
+db.users.updateOne({_id:ObjectId("6565...")},{$push:{hobbies:"swimming"}})//push to hobbies array
+db.users.updateOne({\_id:ObjectId("6565...")},{$pull:{hobbies:"bowling"}})
+db.users.updatMany({address:{$exists:true}},{$unset:{address:""}})
+db.users.replaceOne({age:30},{name:"john"})//everything will be replace with just a name property
+
+-------deleting data
+db.users.deleteOne({name:"john"})
+db.users.deleteMany({age:{$exists:false}})
