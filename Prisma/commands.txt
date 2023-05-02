@@ -1,0 +1,18 @@
+
+[npm install prisma typescript ts-node @types/node nodemon
+
+[npx prisma init --datasource-provider mongodb  //instead of mongodb use another database
+
+
+when we create a model in schema.prisma like the User model we should apply them to my database
+and migrate from what we had before:
+[npx prisma migrate dev --name init 
+dev is to say its for dev invironment and init is a name
+this is not working in mongodb
+
+we should update the client
+the client will auto generate the codes to read update etc.
+first add the client library:
+[npm i @prisma/client
+then we can manualy regenerate client:
+[npx prisma generate
