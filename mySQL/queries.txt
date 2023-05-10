@@ -1,0 +1,14 @@
+-----database
+create database mydb;
+use mydb;  
+drop database mydb;
+alter database mydb read only = 1;
+
+-----tables
+create table employees(
+    employee_id int,
+    first_name varchar(50),
+    last_name varchar(50),
+    hourly_pay decimal(5,2),
+    hire_date date
+);
