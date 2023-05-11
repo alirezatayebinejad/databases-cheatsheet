@@ -145,3 +145,30 @@ alter table transactions add constrait fk_transaction_id
 foreign key(customer_id) references customers(customer_id)
 on delete cascade;
 
+-------stored procedure
+DELIMITER $$
+create procedure get_customers()
+begin
+    select * from customers; //we stored this code to use it with a functions called get_customers()
+end $$
+DELIMITER ;
+
+CALL get_customers();
+drop procedure get_customers;
+
+DELIMITER $$
+create procedure find_customers(IN id INT) //or more arguments
+begin
+    select * from customers
+    where customer_id = id;
+end $$
+DELIMITER ;
+call find_customers(5);
+
+-------trigger
+//do somthing before or after an update delete insert ...
+create trigger befor_hourlypay_update
+befor update on employees
+for each row
+set salary = (NEW.hourly_pay * 2080); //new or old
+SHOW TRIGGERS;
