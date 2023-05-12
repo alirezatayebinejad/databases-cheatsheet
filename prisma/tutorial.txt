@@ -1,0 +1,26 @@
+first npm init -y
+install dependencies: npm i --saved-dev prisma typescript ts-node @types/node nodemon
+create tsconfig.json file:
+{
+    "compilerOptions":{
+        "sourceMap":true,
+        "outDir":"dist",
+        "strict": true,
+        "lib":["esnext"],
+        "esModuleInterop": true
+    }
+}
+
+npx prisma init --datasource-provider databasename
+you can install prisma extention in vscode for syntax formating etc.
+
+change .env link based on the database
+
+after creating a model in schema:
+npx prisma migrate dev --name init //dev for development and init for first time
+
+
+install a client:
+npm i @prisma/client
+
+npx prisma generate
