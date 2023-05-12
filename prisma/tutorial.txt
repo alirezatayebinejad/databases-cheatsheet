@@ -24,3 +24,191 @@ install a client:
 npm i @prisma/client
 
 npx prisma generate
+
+
+----------------------data types
+Int
+String
+Boolean
+Float
+DateTime
+Json
+Bytes
+Othermodelname
+Unsupported("")
+
+----------------------relationships
+model User{
+    id                   String   @id @default(uuid())
+    name                 String
+    writtenPosts         Post[]   @relation("writtenPosts")
+    userPreference       UserPreference?     @relation(fields: [userPreferenceId],references:[id])
+    userPreferenceId     String?   @unique
+    @@unique([age,name])
+    @@index([email])
+} 
+model UserPreference {
+    id            String   @id @default(uuid());
+    emailUpdates  Boolean
+    User          User?
+}
+model Post{
+  id        Int    @id @default(autoincrement())
+  rating    Float
+  author    User   @relation("writtenPosts",fields:[authorId],references:[id])
+  authorId  String 
+}
+model Category{
+    id      String @id @default(uuid());
+    posts   Post[]
+}
+
+------------------attribute
+@unique
+@updatedAt
+@default(now())
+//down of fields:
+@@unique([age,name]) //same name and same age
+@@index([email]) //or email and name
+@@id([title,authorId]) //instead of id
+
+------------------enum
+enum Role{
+    BASIC
+    EDITOR
+    ADMIN
+}
+now add a new field in model:
+role     Role      @default(BASIC)
+
+
+
+
+------------------create operation
+import {PrismaClient} from "@prisma/client"
+const prisma = new PrismaClient({log:["query"]}) //this input is for debug to see the queries
+
+const user = await prisma.user.create({
+    data: {
+        name: "kyle",
+        email:"kyle@test.com",
+        age: 27,
+        userPreference:{
+            create:{
+                emailUpdates:true,
+            },
+        },
+        include:{
+            userPreference:true,
+        }
+        //or select
+        select:{
+            name: true,
+            userPreference:{select:{id:true}},
+        }
+    },
+})
+
+//use createMany to pass multiple objects in data
+
+--------------------client read operation
+
+const user = await prisma.user.findUnique({
+    where:{
+        email:"kyle@test.com",
+        //age_name use because of @@unique([age,name])
+        age_name: {
+            age: 24,
+            name:"kyle",
+        },
+    },
+    //can do include or select
+})
+
+findFirst for return of the first result
+findMany for all in array
+in find many we add and argument like: 
+distinct:["name","age"] //returns only the ones which are different in name and age
+take: 2,  //return 2 
+skip: 1,  //skip 1
+orderBy:{
+    age:"asc" //or desc
+}
+//above thing for pagination
+
+name:{equals: "sally"} 
+instead of equals we can say:
+not:"sally"
+in:["sally","kyle"]
+notIn:["sally","kyle"]
+lt:20 //less than
+gt:20
+lte
+gte
+contains:"@test.com"
+endsWith:
+startsWith:
+AND:[{email:{startsWith:"sally"}},{age:{gt:20}}]
+we can use NOT,OR,AND
+//query on relationships
+userPreference:{
+    emailUpdates:true,
+    writtenPosts:{
+        none: {
+            title:"test"
+        }//returns every user that has non post which title starts with test 
+        //can use none, some and every
+    }
+}
+where:{
+    author:{
+        is:{
+            age:27
+        }//is inNot etc.
+    }
+}
+
+--------------------client update operation
+
+const user=await prisma.user.update({
+    where:{
+        email:"sally@test.com
+    }
+    data:{
+        email:"sally@test3.com
+    }
+})
+//updateMany for multiple changes
+
+//update relationships
+
+const user=await prisma.user.update({
+    where{
+        email:"kyle@test.com",
+    },
+    data:{
+        userPreference:{
+            connect:{
+                id:"existed reference id"
+            },
+            //if not exist
+            connect:{ //disconnect to remove //available in create
+                emailUpdates:true
+            }
+        }
+    }
+})
+const user =await prisma.user.findFirst({
+    where:{
+        name:"kyle",
+    },
+    include:{userPreference:true},
+})
+
+--------------------client delete operation
+
+const user= await prisma.user.delete({
+    where:{
+        email:"kyle@test.com"
+    },
+})
