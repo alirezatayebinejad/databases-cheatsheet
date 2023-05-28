@@ -1,5 +1,5 @@
 first npm init -y
-install dependencies: npm i --saved-dev prisma typescript ts-node @types/node nodemon
+install dependencies: npm i prisma typescript @types/node nodemon //@types/node in some frameworks exist so no need to install
 create tsconfig.json file:
 {
     "compilerOptions":{
@@ -16,17 +16,19 @@ you can install prisma extention in vscode for syntax formating etc.
 
 change .env link based on the database
 
-after creating a model in schema:
-npx prisma migrate dev --name init //dev for development and init for first time
-
-
 install a client:
 npm i @prisma/client
 
+
+after creating a model in schema:
+to create a new migration:
+npx prisma migrate dev --name init //dev for development and init for first time
+
+//to update the Prisma client code.
 npx prisma generate
 
 
-----------------------data types
+----------------------data types-----------------------------------------------------
 Int
 String
 Boolean
@@ -37,7 +39,7 @@ Bytes
 Othermodelname
 Unsupported("")
 
-----------------------relationships
+----------------------relationships--------------------------------------------------
 model User{
     id                   String   @id @default(uuid())
     name                 String
@@ -63,7 +65,7 @@ model Category{
     posts   Post[]
 }
 
-------------------attribute
+------------------attribute------------------------------------------------------------
 @unique
 @updatedAt
 @default(now())
@@ -72,7 +74,7 @@ model Category{
 @@index([email]) //or email and name
 @@id([title,authorId]) //instead of id
 
-------------------enum
+------------------enum-----------------------------------------------------------------
 enum Role{
     BASIC
     EDITOR
@@ -84,7 +86,7 @@ role     Role      @default(BASIC)
 
 
 
-------------------create operation
+------------------create operation-----------------------------------------------------
 import {PrismaClient} from "@prisma/client"
 const prisma = new PrismaClient({log:["query"]}) //this input is for debug to see the queries
 
@@ -111,7 +113,7 @@ const user = await prisma.user.create({
 
 //use createMany to pass multiple objects in data
 
---------------------client read operation
+--------------------client read operation---------------------------------------------
 
 const user = await prisma.user.findUnique({
     where:{
@@ -168,7 +170,7 @@ where:{
     }
 }
 
---------------------client update operation
+--------------------client update operation-----------------------------------------
 
 const user=await prisma.user.update({
     where:{
@@ -205,7 +207,7 @@ const user =await prisma.user.findFirst({
     include:{userPreference:true},
 })
 
---------------------client delete operation
+--------------------client delete operation--------------------------------------------
 
 const user= await prisma.user.delete({
     where:{
